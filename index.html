@@ -8,23 +8,38 @@
 </head>
 <body>
 
-<div class="quiz-container">
-    <h1>Interactive Quiz</h1>
-    <div class="question-container">
-        <div class="question"></div>
-        <ul class="answers">
-            <li class="answer"></li>
-            <li class="answer"></li>
-            <li class="answer"></li>
-            <li class="answer"></li>
-        </ul>
+    <div id="login-page">
+        <h1>Login</h1>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br><br>
+        <button id="login-btn">Log In</button>
+        <p id="login-error" style="color: red; display: none;">Invalid username.</p>
     </div>
-    <div class="answer-feedback"></div>
-    <button class="next-btn">Next Question</button>
-    <div class="score-container"></div>
-</div>
 
-<script src="script.js"></script>
+    <div id="front-page" style="display: none;">
+        <h1>Welcome, <span id="user-display"></span>!</h1>
+        <p>Your total score: <span id="total-score-display">0</span></p>
+        <button id="start-quiz-btn">Start Quiz</button>
+    </div>
+
+    <div id="quiz-container" style="display: none;">
+        <h1>Interactive Quiz</h1>
+        <div class="question-container">
+            <div class="question"></div>
+            <ul class="answers">
+                <li class="answer"></li>
+                <li class="answer"></li>
+                <li class="answer"></li>
+                <li class="answer"></li>
+            </ul>
+        </div>
+        <div class="answer-feedback"></div>
+        <button class="next-btn">Next Question</button>
+        <div class="score-container"></div>
+        <button id="exit-quiz-btn">Exit Quiz</button>
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
 </html>

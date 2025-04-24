@@ -84,3 +84,35 @@ h1 {
     font-size: 18px;
     font-weight: bold;
 }
+
+/* ... (previous CSS content) ... */
+
+#login-page, #front-page {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: 20px;
+}
+
+#login-page label, #login-page input, #login-page button,
+#front-page h1, #front-page p, #front-page button {
+    margin-bottom: 15px;
+}
+
+#login-page button, #front-page button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#login-page button:hover, #front-page button:hover {
+    background-color: #0056b3;
+}

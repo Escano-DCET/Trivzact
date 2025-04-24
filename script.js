@@ -1,3 +1,22 @@
+const loginPage = document.getElementById('login-page');
+const frontPage = document.getElementById('front-page');
+const quizContainer = document.getElementById('quiz-container');
+const loginBtn = document.getElementById('login-btn');
+const startQuizBtn = document.getElementById('start-quiz-btn');
+const exitQuizBtn = document.getElementById('exit-quiz-btn');
+const usernameInput = document.getElementById('username');
+const loginError = document.getElementById('login-error');
+const userDisplay = document.getElementById('user-display');
+const totalScoreDisplay = document.getElementById('total-score-display');
+
+const questionContainer = quizContainer.querySelector('.question');
+const answerButtons = quizContainer.querySelectorAll('.answers li');
+const answersContainer = quizContainer.querySelector('.answers');
+const feedback = quizContainer.querySelector('.answer-feedback');
+const nextBtn = quizContainer.querySelector('.next-btn');
+const scoreContainer = quizContainer.querySelector('.score-container');
+
+
 const quizData = [
     {
         question: "What is the capital of France?",
@@ -181,16 +200,16 @@ const quizData = [
     }
 ];
 
-const questionContainer = document.querySelector('.question');
-const answerButtons = document.querySelectorAll('.answers li');
-const answersContainer = document.querySelector('.answers');
-const feedback = document.querySelector('.answer-feedback');
-const nextBtn = document.querySelector('.next-btn');
-const scoreContainer = document.querySelector('.score-container');
+const users = {
+    "testuser": 0,
+    "guest": 5
+};
 
 let currentQuestionIndex = 0;
-let score = 0;
+let currentScore = 0;
 let currentQuiz = [];
+let loggedInUser = null;
+let answerSelected = false; // To prevent multiple clicks on answers
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -207,49 +226,58 @@ function loadQuestion() {
         const shuffledAnswers = [...currentQuestionData.answers];
         shuffleArray(shuffledAnswers);
 
-        shuffledAnswers.forEach((answer, index) => {
-            answerButtons[index].textContent = answer.text;
-            answerButtons[index].dataset.correct = answer.correct;
-            answerButtons[index].classList.remove('correct', 'incorrect');
-            answerButtons[index].style.pointerEvents = 'auto';
+        answerButtons.forEach((answerButton, index) => {
+            const answerData = shuffledAnswers[index];
+            answerButton.textContent = answerData.text;
+            answerButton.dataset.correct = answerData.correct;
+            answerButton.classList.remove('correct', 'incorrect');
+            answerButton.style.pointerEvents = 'auto';
         });
+        feedback.style.display = 'none';
+        nextBtn.style.display = 'none';
+        answerSelected = false; // Reset for the new question
     } else {
         finishQuiz();
     }
 }
 
 function checkAnswer(selectedAnswer) {
-    const isCorrect = selectedAnswer.dataset.correct === "true";
-    if (isCorrect) {
-        selectedAnswer.classList.add('correct');
-        feedback.textContent = "Correct!";
-        score++;
-    } else {
-        selectedAnswer.classList.add('incorrect');
-        feedback.textContent = "Incorrect.";
-        const correctAnswer = Array.from(answerButtons).find(button => button.dataset.correct === "true");
-        if (correctAnswer) {
-            correctAnswer.classList.add('correct');
+    if (!answerSelected) {
+        answerSelected = true;
+        const isCorrect = selectedAnswer.dataset.correct === "true";
+        if (isCorrect) {
+            selectedAnswer.classList.add('correct');
+            feedback.textContent = "Correct!";
+            currentScore++;
+        } else {
+            selectedAnswer.classList.add('incorrect');
+            feedback.textContent = "Incorrect.";
+            const correctAnswer = Array.from(answerButtons).find(button => button.dataset.correct === "true");
+            if (correctAnswer) {
+                correctAnswer.classList.add('correct');
+            }
         }
-    }
 
-    answerButtons.forEach(ans => ans.style.pointerEvents = 'none');
-    feedback.style.display = 'block';
-    nextBtn.style.display = 'inline-block';
+        answerButtons.forEach(ans => ans.style.pointerEvents = 'none');
+        feedback.style.display = 'block';
+        nextBtn.style.display = 'inline-block';
+    }
 }
 
 function nextQuestion() {
     currentQuestionIndex++;
-    feedback.style.display = 'none';
-    nextBtn.style.display = 'none';
     loadQuestion();
 }
 
 function startQuiz() {
+    // Hide the front page
+    frontPage.style.display = 'none';
+    // Show the quiz container
+    quizContainer.style.display = 'block';
     shuffleArray(quizData);
     currentQuiz = quizData.slice(0, Math.min(10, quizData.length));
     currentQuestionIndex = 0;
-    score = 0;
+    currentScore = 0;
     scoreContainer.textContent = "";
     loadQuestion();
 }
@@ -259,9 +287,52 @@ function finishQuiz() {
     answerButtons.forEach(ans => ans.style.display = 'none');
     feedback.style.display = 'none';
     nextBtn.style.display = 'none';
-    scoreContainer.textContent = `Your final score is: ${score} out of ${currentQuiz.length}`;
+    scoreContainer.textContent = `Your score for this quiz: ${currentScore} out of ${currentQuiz.length}`;
+
+    if (loggedInUser && users.hasOwnProperty(loggedInUser)) {
+        users[loggedInUser] += currentScore;
+        totalScoreDisplay.textContent = users[loggedInUser];
+    }
+
+    exitQuizBtn.style.display = 'inline-block';
 }
 
+function exitQuiz() {
+    // Hide the quiz container
+    quizContainer.style.display = 'none';
+    // Show the front page
+    frontPage.style.display = 'block';
+    exitQuizBtn.style.display = 'none';
+    currentQuestionIndex = 0;
+    currentScore = 0;
+    answerButtons.forEach(ans => {
+        ans.style.display = 'block';
+        ans.classList.remove('correct', 'incorrect');
+        ans.style.pointerEvents = 'auto';
+    });
+    feedback.style.display = 'none';
+    nextBtn.style.display = 'none';
+    scoreContainer.textContent = "";
+}
+
+loginBtn.addEventListener('click', function() {
+    const username = usernameInput.value.trim();
+    if (users.hasOwnProperty(username)) {
+        loggedInUser = username;
+        userDisplay.textContent = loggedInUser;
+        totalScoreDisplay.textContent = users[loggedInUser];
+        loginPage.style.display = 'none';
+        frontPage.style.display = 'block';
+        loginError.style.display = 'none';
+    } else {
+        loginError.style.display = 'block';
+    }
+});
+
+startQuizBtn.addEventListener('click', startQuiz);
+exitQuizBtn.addEventListener('click', exitQuiz);
+
+// Attach event listeners only once
 answerButtons.forEach(answer => {
     answer.addEventListener('click', function() {
         checkAnswer(this);
@@ -270,4 +341,7 @@ answerButtons.forEach(answer => {
 
 nextBtn.addEventListener('click', nextQuestion);
 
-startQuiz();
+loginPage.style.display = 'block';
+frontPage.style.display = 'none';
+quizContainer.style.display = 'none';
+exitQuizBtn.style.display = 'none';
