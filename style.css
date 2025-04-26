@@ -44,17 +44,17 @@ h1 {
 }
 
 .answers li:hover {
-    background-color: #e1e1e1;
+    background-color: #e0b744;
 }
 
 .correct {
     background-color: #4CAF50;
-    color: white;
+    color: rgb(41, 95, 9);
 }
 
 .incorrect {
     background-color: #f44336;
-    color: white;
+    color: rgb(255, 0, 0);
 }
 
 .answer-feedback {
