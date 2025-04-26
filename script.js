@@ -1,20 +1,21 @@
-const loginPage = document.getElementById('login-page');
-const frontPage = document.getElementById('front-page');
-const quizContainer = document.getElementById('quiz-container');
-const loginBtn = document.getElementById('login-btn');
-const startQuizBtn = document.getElementById('start-quiz-btn');
-const exitQuizBtn = document.getElementById('exit-quiz-btn');
-const usernameInput = document.getElementById('username');
-const loginError = document.getElementById('login-error');
-const userDisplay = document.getElementById('user-display');
-const totalScoreDisplay = document.getElementById('total-score-display');
+const loginPage = document.getElementById('login-page'); // Login page container
+const frontPage = document.getElementById('front-page'); // Front page container after login
+const quizContainer = document.getElementById('quiz-container'); // Quiz section container
+const loginBtn = document.getElementById('login-btn'); // Login button element
+const startQuizBtn = document.getElementById('start-quiz-btn'); // Button to start the quiz
+const exitQuizBtn = document.getElementById('exit-quiz-btn'); // Button to exit the quiz
+const usernameInput = document.getElementById('username'); // Pag Tytype-an ng Username
+const loginError = document.getElementById('login-error'); // Mag didisplay ng error kapag nag fail yung log in
+const userDisplay = document.getElementById('user-display'); // Element to show logged-in username
+const totalScoreDisplay = document.getElementById('total-score-display'); // Element para ma display yung score
 
-const questionContainer = quizContainer.querySelector('.question');
-const answerButtons = quizContainer.querySelectorAll('.answers li');
-const answersContainer = quizContainer.querySelector('.answers');
-const feedback = quizContainer.querySelector('.answer-feedback');
-const nextBtn = quizContainer.querySelector('.next-btn');
-const scoreContainer = quizContainer.querySelector('.score-container');
+
+const questionContainer = quizContainer.querySelector('.question'); // Area to display quiz question
+const answerButtons = quizContainer.querySelectorAll('.answers li'); // List items for possible answers
+const answersContainer = quizContainer.querySelector('.answers'); // Container for answer choices
+const feedback = quizContainer.querySelector('.answer-feedback'); // Mag didisplay ng correct/incorrect kapag pumili ng sagot
+const nextBtn = quizContainer.querySelector('.next-btn'); // Button to go to next question
+const scoreContainer = quizContainer.querySelector('.score-container'); // Container to display final score
 
 
 const quizData = [
@@ -1092,6 +1093,7 @@ let currentQuiz = [];
 let loggedInUser = null;
 let answerSelected = false; // To prevent multiple clicks on answers
 
+// Para random yung mga choices
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -1103,7 +1105,8 @@ function loadQuestion() {
     if (currentQuestionIndex < currentQuiz.length) {
         const currentQuestionData = currentQuiz[currentQuestionIndex];
         questionContainer.textContent = currentQuestionData.question;
-
+        
+        // para naka shuffle yung pwesto nung tamang sagot
         const shuffledAnswers = [...currentQuestionData.answers];
         shuffleArray(shuffledAnswers);
 
@@ -1116,12 +1119,13 @@ function loadQuestion() {
         });
         feedback.style.display = 'none';
         nextBtn.style.display = 'none';
-        answerSelected = false; // Reset for the new question
+        answerSelected = false; // Para mag reset sa bagong set ng question
     } else {
         finishQuiz();
     }
 }
 
+// Dito yung kapag pumili ng sagot lalabas kung correct/incorrect yung piniling sagot
 function checkAnswer(selectedAnswer) {
     if (!answerSelected) {
         answerSelected = true;
@@ -1151,7 +1155,7 @@ function nextQuestion() {
 }
 
 function startQuiz() {
-    // Hide front page
+    // Para pag nag start quiz naka hide yung front page or parang next page na sya
     frontPage.style.display = 'none';
     // Show the quiz container
     quizContainer.style.display = 'block';
@@ -1181,7 +1185,7 @@ function finishQuiz() {
 function exitQuiz() {
     // Hide quiz container
     quizContainer.style.display = 'none';
-    // To Show front page
+    // Pag nag exit naman babalik sa front page 
     frontPage.style.display = 'block';
     exitQuizBtn.style.display = 'none';
     currentQuestionIndex = 0;
@@ -1217,6 +1221,9 @@ loginBtn.addEventListener('click', function() {
 startQuizBtn.addEventListener('click', startQuiz);
 exitQuizBtn.addEventListener('click', exitQuiz);
 
+// Attach event listeners to each answer button so that when clicked, 
+// the checkAnswer function is triggered with the clicked button as its argument.
+// Para isang beses lang mag rerepon yung bawat button para din ma avoid o ma duplicate yung event attachments.
 // Attach event listeners only once
 answerButtons.forEach(answer => {
     answer.addEventListener('click', function() {
@@ -1224,7 +1231,7 @@ answerButtons.forEach(answer => {
     });
 });
 
-nextBtn.addEventListener('click', nextQuestion);
+nextBtn.addEventListener('click', nextQuestion); // Naglalagay ng event listener sa "Next" button para tawagin ang nextQuestion function kapag na-click
 
 loginPage.style.display = 'block';
 frontPage.style.display = 'none';
