@@ -1084,8 +1084,6 @@ const quizData = [
 ];
 
 const users = {
-    "testuser": 0,
-    "guest": 5
 };
 
 let currentQuestionIndex = 0;
@@ -1153,7 +1151,7 @@ function nextQuestion() {
 }
 
 function startQuiz() {
-    // Hide the front page
+    // Hide front page
     frontPage.style.display = 'none';
     // Show the quiz container
     quizContainer.style.display = 'block';
@@ -1181,9 +1179,9 @@ function finishQuiz() {
 }
 
 function exitQuiz() {
-    // Hide the quiz container
+    // Hide quiz container
     quizContainer.style.display = 'none';
-    // Show the front page
+    // To Show front page
     frontPage.style.display = 'block';
     exitQuizBtn.style.display = 'none';
     currentQuestionIndex = 0;
@@ -1200,7 +1198,10 @@ function exitQuiz() {
 
 loginBtn.addEventListener('click', function() {
     const username = usernameInput.value.trim();
-    if (users.hasOwnProperty(username)) {
+    if (username !== "") {
+        if (!users.hasOwnProperty(username)) {
+            users[username] = 0; 
+        }
         loggedInUser = username;
         userDisplay.textContent = loggedInUser;
         totalScoreDisplay.textContent = users[loggedInUser];
@@ -1209,6 +1210,7 @@ loginBtn.addEventListener('click', function() {
         loginError.style.display = 'none';
     } else {
         loginError.style.display = 'block';
+        loginError.textContent = 'Username cannot be empty.';
     }
 });
 
